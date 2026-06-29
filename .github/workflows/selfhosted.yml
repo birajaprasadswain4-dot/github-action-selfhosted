@@ -1,0 +1,16 @@
+name: EC2 Runner Test
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: self-hosted
+
+    steps:
+      - name: Test
+        run: |
+          echo "Hello from EC2"
+          uname -a
+          whoami
