@@ -1,19 +1,46 @@
-name: Terraform Deploy
+name: Terraform EC2 Deploy
 
 on:
-  push:
-    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   terraform:
+    name: Terraform
     runs-on: self-hosted
 
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: us-east-1
+
     steps:
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@v4
+
+      - name: Verify Runner
+        run: |
+          echo "Runner is working"
+          hostname
+          pwd
+          whoami
+
+      - name: Verify AWS CLI
+        run: aws --version
+
+      - name: Verify Terraform
+        run: terraform version
+
+      - name: Check AWS Account
+        run: aws sts get-caller-identity
 
       - name: Terraform Init
         run: terraform init
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform Plan
+        run: terraform plan
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
